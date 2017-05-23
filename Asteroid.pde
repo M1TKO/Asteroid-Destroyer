@@ -31,6 +31,7 @@ class Asteroid {
     //ellipseMode(CENTER);      // for debugging
     //ellipse(x,y, d, d);
     //textMode(CENTER);
+    fill(255);
     text(lifes, x-5, y+5);      //  display lifes of the asteroid
   }
   void move() {

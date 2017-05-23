@@ -1,4 +1,4 @@
-import processing.serial.*; //<>// //<>//
+import processing.serial.*; //<>// //<>// //<>//
 PFont font;
 Serial myPort;              //  The serial port
 float potVal = 10;         //  holds the given value of the potentiometer 
@@ -8,12 +8,13 @@ int points = 0;           //  Number of the shooted asteroids
 int bgY = 0;                //  For the illusion of moving background
 int bgSpeed = 2;          //  Speed of the moving background
 int asteroidTimer = 0;     //  How ofthen to spawn an asteroid
-int lifes = 5;              //  Ship's lifes
+int lifes = 0;              //  Ship's lifes
 int laserTimer = 0;        //  Shot deley timer  // 30
 int laserDelay = 10;
 int shipDiameter = 80;
 int asteroidDelay = 100;
 int textHomeX;
+int bestResult;
 boolean gameStarted = false;
 boolean gameOver = false;
 PImage spaceship;
@@ -52,8 +53,29 @@ void draw () {
     if (laserTimer < laserDelay) {    // delay between shots timer (can shoot only if it is >= the given value)
       laserTimer++;
     }
+
+    showGameOver();
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   } else if (gameOver) {  
-    //      game over code....
+    background(80);                // Game Over screen
+    image(bgc, width/2, 0);
+    textFont(font, 90);
+    fill(#FFFFFF);
+    text("GAME OVER", 15, 100, width-10, width-100);
+    textFont(font, 45);
+    text("Colected Points: " + points, 20, 600);
+    text("Best Record: " + bestResult, 20, 650);
+    textHomeX += 5;
+    if (textHomeX > width+550) {                                    //moving text
+      textHomeX = 0;
+    }
+    image(asteroidImg, textHomeX-250, 400, 200, 200);
+    
+    fill(#3993FF);
+    textFont(font, 25);
+    text("Developer: Dimitar Kalenderov", 10, height-10);
+    
   } else {
     background(0);                // Home screen
     image(bgc, 0, 0);
@@ -147,7 +169,15 @@ void moveAsteroids() {
   }
 }
 
-
+void showGameOver() {
+  if (lifes <= 0) {
+    gameOver = true;
+    gameStarted = false;
+    if(points > bestResult){
+      bestResult = points;
+    }
+  }
+}
 
 
 boolean is_overlapping(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2) {   //  if 2 objects overlap returns TRUE
@@ -175,17 +205,32 @@ void asteroidHIT(Asteroid asteroid, Laser laser) {
 }
 
 
-void keyPressed(){
-  if(!gameOver && !gameStarted){
+void keyPressed() {
+  if (!gameOver && !gameStarted) {
     gameStarted = true;   
-  }else if(gameOver && !gameStarted){
-    gameStarted =true;    
+    gameOver = false;
+  } else if (gameOver && !gameStarted) {
+    gameRestart();
+    gameOver = false;
+    gameStarted =true;
   }
-
 }
 
 
-
+void gameRestart() {
+  points = 0;          
+  bgY = 0;             
+  bgSpeed = 2;         
+  asteroidTimer = 0;   
+  lifes = 5;           
+  laserTimer = 0;      
+  laserDelay = 10;
+  asteroidDelay = 100;
+  asteroids = null;
+  laserShots = null;
+  asteroids = new ArrayList();
+  laserShots = new ArrayList();
+}
 
 /////////////////////  READS THE POTENTIOMETER VALUES FROM THE ARDUINO    ////////////////////////////////////
 
