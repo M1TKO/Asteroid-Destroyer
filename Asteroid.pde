@@ -10,7 +10,8 @@ class Asteroid {
     this.y = ty;
     this.asteroid = tasteroid;
 
-    if (d <= 40) {
+    
+    if (d <= 40) {   //  Give different lifes depending on the asteroid size
       lifes = 1;
     } else if (d > 40 && d <= 60) {
       lifes = 2;
@@ -21,16 +22,16 @@ class Asteroid {
     } else {
       lifes = 1;
     }
-    reward = lifes;
+    reward = lifes;        //  backup value of the lifes (becouse lifes are always changing)
   }
 
   void display() {
     imageMode(CENTER);
     image(asteroid, x, y, d, d);
+    //ellipseMode(CENTER);      // for debugging
+    //ellipse(x,y, d, d);
     //textMode(CENTER);
     text(lifes, x-5, y+5);      //  display lifes of the asteroid
-    //ellipseMode(CENTER);  // for debugging
-    //ellipse(x,y, d, d);
   }
   void move() {
     this.y+= speed;
