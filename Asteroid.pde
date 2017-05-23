@@ -3,7 +3,8 @@ class Asteroid {
   float speed = 4;
   int x, y;
   PImage asteroid;
-  int lifes; 
+  int lifes;
+  int reward;
   Asteroid(int tx, int ty, PImage tasteroid) {
     this.x = tx;
     this.y = ty;
@@ -20,13 +21,14 @@ class Asteroid {
     } else {
       lifes = 1;
     }
+    reward = lifes;
   }
 
   void display() {
     imageMode(CENTER);
     image(asteroid, x, y, d, d);
-
-    text(lifes, x, y);
+    //textMode(CENTER);
+    text(lifes, x-5, y+5);      //  display lifes of the asteroid
     //ellipseMode(CENTER);  // for debugging
     //ellipse(x,y, d, d);
   }

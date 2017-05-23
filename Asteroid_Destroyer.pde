@@ -1,14 +1,15 @@
-import processing.serial.*;
+import processing.serial.*; //<>// //<>//
 
-Serial myPort;        //  The serial port
+Serial myPort;              //  The serial port
 float potVal = 10;         //  holds the given value of the potentiometer 
-int x = 0;            //  Ship's X location
-int y;                //  How far from the bottom is the ship
-int points = 0;       //  Number of the shooted asteroids
-int bgY = 0;          //  For the illusion of moving background
-int bgSpeed = 2;      //  Speed of the moving background
-int time = 60;        //  How ofthen to spawn an asteroid
-int lifes = 5;        //  Ship's lifes
+int x = 0;                  //  Ship's X location
+int y;                    //  How far from the bottom is the ship
+int points = 0;           //  Number of the shooted asteroids
+int bgY = 0;                //  For the illusion of moving background
+int bgSpeed = 2;          //  Speed of the moving background
+int asteroidTimer = 0;     //  How ofthen to spawn an asteroid
+int lifes = 5;              //  Ship's lifes
+int laserTimer = 0;        //  Shot deley timer  // 30
 int shipDiameter = 80;
 PImage spaceship;
 PImage bgc;
@@ -42,10 +43,14 @@ void draw () {
   ship();
 
   textSize(20);
-  text(frameRate, 30, 30);
+  text("lifes: " + lifes + " | points: " + points, 30, 30);
   text(potVal, 30, 60);
 
-  time++;
+  asteroidTimer++;
+
+  if (laserTimer < 15) {
+    laserTimer++;
+  }
 }
 
 void moveBackground(PImage bgc) {
@@ -75,7 +80,8 @@ void shot() {
 
 void shootLasers() {
 
-  if (keyPressed) {
+  if (laserTimer >= 15 && keyPressed) {
+    laserTimer = 0;    //reset timer for shot delay
     shot();
   }
 
@@ -98,10 +104,11 @@ void shootLasers() {
 
 
 
+
 void spawnAsteroids() {
 
-  if ( time == 100) {  //checks to see if enough time is passed to spawn an asteroid
-    time = 0;
+  if ( asteroidTimer == 100) {  //checks to see if enough time is passed to spawn an asteroid
+    asteroidTimer = 0;
     asteroids.add(new Asteroid((int)random(0, width), -100, asteroidImg));    //spawn asteroid
   }
 }
@@ -118,8 +125,7 @@ void moveAsteroids() {
     }
 
     if ( is_overlapping(tAsteroid.x, tAsteroid.y, tAsteroid.d/2, x, y, shipDiameter/2) ) {
-    } else {
-      fill(255);
+      
     }
   }
 }
@@ -138,15 +144,16 @@ boolean is_overlapping(float cx1, float cy1, float cr1, float cx2, float cy2, fl
 
 
 void asteroidHIT(Asteroid asteroid, Laser laser) {
-
-  if ( is_overlapping(asteroid.x, asteroid.y, asteroid.d/2, laser.x, laser.y, 50/2) ) {      //  checks if the laser is hitting the asteroid
-    asteroid.lifes--;                                                                        //  minus 1 life
-    if (asteroid.lifes == 0) {
-      points += asteroid.lifes + 1;
-      /////////////////////                                            maybe special effect ????      !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      asteroids.remove(asteroid);                                                            //  if hit and destroyed + point
+  if(asteroid.y > 0){                                                                          //  prevent cheating
+    if ( is_overlapping(asteroid.x, asteroid.y, asteroid.d/2, laser.x, laser.y, 50/2) ) {      //  checks if the laser is hitting the asteroid
+      asteroid.lifes--;     //  minus 1 life
+      if (asteroid.lifes == 0) {
+        points += asteroid.reward;
+        /////////////////////                                            maybe special effect ????      !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        asteroids.remove(asteroid);                                                            //  if hit and destroyed + point
+      }
+      laserShots.remove(laser);                                                                //  removes the shooted laser
     }
-    laserShots.remove(laser);                                                                //  removes the shooted laser
   }
 }
 
