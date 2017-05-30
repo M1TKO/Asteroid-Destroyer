@@ -1,16 +1,14 @@
 class Asteroid {
-  int d = (int)random(30, 100);
-  float speed = 4;
-  int x, y;
+  int d = (int)random(30, 120);
+  float x, y, speed;
+  int lifes, reward;
   PImage asteroid;
-  int lifes;
-  int reward;
-  Asteroid(int tx, int ty, PImage tasteroid) {
+  Asteroid(int tx, int ty, PImage tasteroid, float tspeed) {
     this.x = tx;
     this.y = ty;
     this.asteroid = tasteroid;
+    this.speed = tspeed;
 
-    
     if (d <= 40) {   //  Give different lifes depending on the asteroid size
       lifes = 1;
     } else if (d > 40 && d <= 60) {
@@ -19,7 +17,9 @@ class Asteroid {
       lifes = 3;
     } else if (d > 80 && d <= 100) {
       lifes = 4;
-    } else {
+    }  else if (d > 100 && d <= 120) {
+      lifes = 5; 
+    }else {
       lifes = 1;
     }
     reward = lifes;        //  backup value of the lifes (becouse lifes are always changing)
@@ -36,5 +36,6 @@ class Asteroid {
   }
   void move() {
     this.y+= speed;
+
   }
 }

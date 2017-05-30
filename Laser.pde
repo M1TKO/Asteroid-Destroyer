@@ -21,15 +21,4 @@ class Laser {
     this.y -= speed;
   }
   
-  boolean laserHit(int astX, int astY, int astR){
-    
-    
-    
-    
-    
-    
-    return true;
-  }
-  
-  
 }
